@@ -91,7 +91,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 <div class="cold-list" id="coldList"></div>
 <div class="hotcold-switch">
 <label class="switch"><input type="checkbox" id="enableHotcold" checked><span class="slider"></span></label>
-<span class="switch-label">启用热冷号权重生成</span>
+<span class="switch-label">启用热冷号权重生成</span></div><div class="setting-row"><div class="setting-label">热冷比例 <small>热:冷</small></div><div style="display:flex;align-items:center"><input type="range" id="hotcoldRatio" min="0" max="10" value="7" style="width:70px" oninput="document.getElementById('ratioVal').textContent=this.value+':'+(10-this.value)"><span id="ratioVal" style="color:#ffd700;font-size:11px;margin-left:5px">7:3</span></div>
 </div>
 </div>
 <div class="setting-panel" id="sumPanel">
@@ -193,7 +193,7 @@ cl.innerHTML='<span class="cold-label">❄️ 冷号:</span>'+cold.map(function(
 
 function pick(min,max,count){var pool=[];for(var i=min;i<=max;i++)pool.push(i);var result=[];for(var i=0;i<count&&pool.length>0;i++){var idx=Math.floor(Math.random()*pool.length);result.push(pool.splice(idx,1)[0]);}return result;}
 
-function wPick(hist,min,max,count){var pool=[];for(var i=min;i<=max;i++)pool.push(i);var wts=pool.map(function(n){return(hist[n]||0)+1});var total=wts.reduce(function(a,b){return a+b},0);var result=[],uPool=pool.slice(),uWts=wts.slice();
+function wPick(hist,min,max,count,hotWeight){var pool=[];for(var i=min;i<=max;i++)pool.push(i);var wts=pool.map(function(n){return(hist[n]||0)+1});var total=wts.reduce(function(a,b){return a+b},0);var result=[],uPool=pool.slice(),uWts=wts.slice();
 for(var i=0;i<count&&uPool.length>0;i++){var r=Math.random()*total,cs=0;for(var j=0;j<uPool.length;j++){cs+=uWts[j];if(cs>=r){result.push(uPool[j]);total-=uWts[j];uPool.splice(j,1);uWts.splice(j,1);break;}}if(result.length<=i){var idx=Math.floor(Math.random()*uPool.length);result.push(uPool.splice(idx,1)[0]);total-=uWts.splice(idx,1)[0];}}return result;}
 
 function genReds(sMin,sMax,r1,r2,r3,uHot,mR){var maxT=500;var total=r1+r2+r3;var need=uHot?6:mR;
@@ -212,7 +212,7 @@ var reds=[];while(reds.length<5){var n=Math.floor(Math.random()*35)+1;if(reds.in
 
 function genSSQ(){var sMin=parseInt(document.getElementById('sumMin').value)||60;var sMax=parseInt(document.getElementById('sumMax').value)||120;
 var r1=parseInt(document.getElementById('r1').value)||0;var r2=parseInt(document.getElementById('r2').value)||0;var r3=parseInt(document.getElementById('r3').value)||0;
-var bZone=document.getElementById('blueZone').value;var uHot=document.getElementById('enableHotcold').checked&&Object.keys(redHistory).length>0;
+var bZone=document.getElementById('blueZone').value;var uHot=document.getElementById('enableHotcold').checked&&Object.keys(redHistory).length>0;var hW=parseFloat((parseInt(document.getElementById('hotcoldRatio').value)/10);var hW=parseFloat((parseInt(document.getElementById('hotcoldRatio').value)/10);
 var reds=genReds(sMin,sMax,r1,r2,r3,uHot,33);var blue;
 if(uHot&&Object.keys(blueHistory).length>0){var pool=[];for(var i=1;i<=16;i++)pool.push({n:i,w:(blueHistory[i]||0)+1});var total=pool.reduce(function(a,b){return a+b.w},0);var r=Math.random()*total,cs=0;for(var j=0;j<pool.length;j++){cs+=pool[j].w;if(cs>=r){blue=pool[j].n;break;}}blue=blue||Math.floor(Math.random()*16)+1;}
 else{if(bZone==='1')blue=Math.floor(Math.random()*8)+1;else if(bZone==='2')blue=Math.floor(Math.random()*8)+9;else blue=Math.floor(Math.random()*16)+1;}
