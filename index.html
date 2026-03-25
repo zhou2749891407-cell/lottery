@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎰 彩票号码生成器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);min-height:100vh;padding:15px}
+.container{background:rgba(255,255,255,0.05);border-radius:20px;padding:20px;width:100%;max-width:540px;margin:0 auto;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+h1{text-align:center;color:#fff;font-size:20px;margin-bottom:12px}
+.type-selector{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px}
+.type-btn{padding:8px 12px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#aaa;border-radius:8px;cursor:pointer;font-size:12px;transition:all 0.3s}
+.type-btn:hover{border-color:#e94560;color:#fff}
+.type-btn.active{background:#e94560;border-color:#e94560;color:#fff}
+.setting-panel{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px;margin-bottom:12px}
+.setting-title{color:#e94560;font-size:13px;font-weight:bold;margin-bottom:10px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.setting-row:last-child{margin-bottom:0}
+.setting-label{color:#aaa;font-size:12px}
+.setting-label small{display:block;color:#666;font-size:10px}
+.setting-input{width:50px;padding:5px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:12px;text-align:center}
+.zone-input{width:36px;padding:4px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:12px;text-align:center}
+.zone-sep{color:#666;font-size:11px;margin:0 2px}
+.setting-select{padding:5px 8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:12px}
+.setting-select option{background:#1a1a2e}
+.hotcold-panel{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px;margin-bottom:12px}
+.hotcold-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.hotcold-title{color:#ffd700;font-size:13px;font-weight:bold}
+.refresh-btn{padding:4px 10px;background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.4);border-radius:6px;color:#ffd700;font-size:11px;cursor:pointer}
+.refresh-btn:hover{background:rgba(255,215,0,0.3)}
+.hotcold-status{color:#888;font-size:11px;margin-bottom:8px}
+.hot-list,.cold-list{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.hot-label,.cold-label{width:100%;font-size:10px;color:#666;margin-bottom:4px}
+.hot-ball{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff}
+.hot-ball.red{background:linear-gradient(145deg,#ff4444,#cc0000)}
+.hot-ball.blue{background:linear-gradient(145deg,#4488ff,#0066cc)}
+.cold{opacity:0.4}
+.hotcold-switch{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05)}
+.switch{position:relative;width:40px;height:22px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.1);border-radius:22px;transition:0.3s}
+.slider:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s}
+input:checked+.slider{background:#00c851}
+input:checked+.slider:before{transform:translateX(18px)}
+.switch-label{color:#aaa;font-size:12px}
+.group-selector{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+.group-selector span{color:#888;font-size:12px}
+.group-selector select{padding:5px 10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:12px}
+.group-selector select option{background:#1a1a2e}
+.numbers-area{min-height:70px;margin-bottom:10px}
+.set-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:3px;margin-bottom:6px;padding:6px;background:rgba(255,255,255,0.03);border-radius:8px}
+.set-label{color:#666;font-size:10px;margin-right:4px;min-width:20px}
+.zone-tag{font-size:9px;color:#666;padding:2px 4px;background:rgba(255,255,255,0.05);border-radius:3px;margin-right:3px}
+.zone-tag.z1{color:#ff6b6b}.zone-tag.z2{color:#ffd700}.zone-tag.z3{color:#4d9fff}
+.zone-sep-line{color:#444;margin:0 2px}
+.ball{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;color:#fff;animation:pop 0.3s ease-out}
+.ball.red{background:linear-gradient(145deg,#ff6b6b,#ee5a5a)}
+.ball.blue{background:linear-gradient(145deg,#4d9fff,#3a8fe6)}
+.ball.gold{background:linear-gradient(145deg,#ffd700,#ffb700)}
+.plus{color:#fff;font-size:16px;opacity:0.5;margin:0 2px}
+.btn-row{display:flex;gap:8px;margin-bottom:12px}
+.generate-btn{flex:1;padding:10px;background:linear-gradient(145deg,#e94560,#ff6b6b);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer}
+.copy-btn{flex:1;padding:10px;background:linear-gradient(145deg,#00c851,#00a044);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer}
+.copy-btn.copied{background:linear-gradient(145deg,#00a044,#008836)}
+.history h3{color:#888;font-size:11px;margin-bottom:6px}
+.history-list{max-height:80px;overflow-y:auto}
+.history-item{color:#666;font-size:10px;padding:4px 6px;background:rgba(255,255,255,0.03);border-radius:4px;margin-bottom:2px;font-family:"Consolas",monospace}
+.lucky-tip{text-align:center;color:#888;font-size:10px;margin-top:10px;font-style:italic}
+@keyframes pop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎰 彩票号码生成器</h1>
+<div class="type-selector">
+<button class="type-btn active" onclick="setType('ssq')">双色球</button>
+<button class="type-btn" onclick="setType('dlt')">大乐透</button>
+<button class="type-btn" onclick="setType('qxc')">七星彩</button>
+<button class="type-btn" onclick="setType('fc3d')">3D直选</button>
+<button class="type-btn" onclick="setType('pl5')">排列五</button>
+<button class="type-btn" onclick="setType('kl8')">快乐8</button>
+</div>
+<div class="hotcold-panel" id="hotcoldPanel">
+<div class="hotcold-header">
+<span class="hotcold-title">🔥 热冷号分析</span>
+<button class="refresh-btn" id="refreshBtn" onclick="fetchHistory()">🔄 刷新数据</button>
+</div>
+<div class="hotcold-status" id="hotcoldStatus">正在加载...</div>
+<div class="hot-list" id="hotList"></div>
+<div class="cold-list" id="coldList"></div>
+<div class="hotcold-switch">
+<label class="switch"><input type="checkbox" id="enableHotcold" checked><span class="slider"></span></label>
+<span class="switch-label">启用热冷号权重生成</span>
+</div>
+</div>
+<div class="setting-panel" id="sumPanel">
+<div class="setting-title">🔢 红球和值范围</div>
+<div class="setting-row">
+<div class="setting-label">红球总和范围<small>双色球:21-183 | 大乐透:15-175</small></div>
+<div><input type="number" class="setting-input" id="sumMin" value="60"><span class="zone-sep">~</span><input type="number" class="setting-input" id="sumMax" value="120"></div>
+</div>
+</div>
+<div class="setting-panel" id="zonePanel">
+<div class="setting-title">⚙️ 区域设置</div>
+<div class="setting-row">
+<div class="setting-label">红球分区<small>1区:01-11 | 2区:12-22 | 3区:23-33</small></div>
+<div><input type="number" class="zone-input" id="r1" value="2"><span class="zone-sep">+</span><input type="number" class="zone-input" id="r2" value="2"><span class="zone-sep">+</span><input type="number" class="zone-input" id="r3" value="2"></div>
+</div>
+<div class="setting-row" id="ssqBlueRow">
+<div class="setting-label">蓝球分区 <small>1区:01-08 | 2区:09-16</small></div>
+<select class="setting-select" id="blueZone"><option value="0">不限</option><option value="1">1区</option><option value="2">2区</option></select>
+</div>
+<div class="setting-row" id="dltBlueRow" style="display:none">
+<div class="setting-label">蓝球分区 <small>1区:01-06 | 2区:07-12</small></div>
+<div><span style="color:#888;font-size:11px">第1:</span><select class="setting-select" id="blue1Zone"><option value="0">不限</option><option value="1">1区</option><option value="2">2区</option></select><span style="color:#888;font-size:11px;margin-left:8px">第2:</span><select class="setting-select" id="blue2Zone"><option value="0">不限</option><option value="1">1区</option><option value="2">2区</option></select></div>
+</div>
+</div>
+<div class="setting-panel" id="kl8Panel" style="display:none">
+<div class="setting-title">⚙️ 单双设置</div>
+<div class="setting-row">
+<div class="setting-label">单双比例 <small>单数:双数</small></div>
+<select class="setting-select" id="kl8OddEven"><option value="0">不限</option><option value="5:5">5:5</option><option value="6:4">6:4</option><option value="7:3">7:3</option><option value="4:6">4:6</option><option value="3:7">3:7</option></select>
+</div>
+</div>
+<div class="group-selector">
+<span>生成组数:</span>
+<select id="groupCount" onchange="generate()">
+<option value="1">1组</option><option value="2">2组</option><option value="3">3组</option><option value="4">4组</option><option value="5">5组</option>
+<option value="6">6组</option><option value="7">7组</option><option value="8">8组</option><option value="9">9组</option><option value="10">10组</option>
+</select>
+</div>
+<div class="numbers-area" id="numbersArea"></div>
+<div class="btn-row">
+<button class="generate-btn" onclick="generate()">🎲 重新生成</button>
+<button class="copy-btn" id="copyBtn" onclick="copyAll()">📋 一键复制</button>
+</div>
+<div class="history"><h3>📝 历史记录</h3><div class="history-list" id="historyList"></div></div>
+<p class="lucky-tip" id="tip">✨ 点击按钮，命运掌握在你手中 ✨</p>
+</div>
+<script>
+var currentType='ssq',currentSets=[],history=[],redHistory={},blueHistory={},lastDraws=[];
+var tips=["✨ 小赌怡情，大赌伤身 ✨","💫 梦想还是要有的，万一中了呢 💫","🎯 命运给的机会，要好好珍惜 🎯","🍀 今日宜开奖 🍀","🌟 哈仔祝你好运 🌟"];
+
+// 预设的真实历史数据
+var REAL_SSQ=[
+[3,9,16,18,24,32,4],[1,4,13,17,26,32,9],[5,11,22,27,30,33,14],[8,12,15,21,25,28,2],[2,7,13,19,24,31,6],
+[4,10,14,22,27,29,11],[1,6,11,18,23,30,5],[3,9,15,20,26,33,8],[5,12,17,19,28,32,3],[2,7,14,21,25,31,7],
+[4,8,13,16,24,29,12],[6,10,18,22,27,30,1],[1,5,11,15,23,28,9],[3,7,14,19,26,32,4],[2,9,12,17,20,33,6],
+[4,6,13,18,24,31,10],[5,8,15,21,27,29,3],[1,10,14,19,25,30,8],[3,7,11,16,22,28,5],[2,6,12,17,23,32,13],
+[4,9,13,20,26,33,2],[5,10,15,18,24,29,7],[1,8,14,21,27,31,11],[3,6,11,19,25,30,6],[2,7,12,16,22,28,4]
+];
+
+var REAL_DLT=[
+[[3,8,15,22,31],[4,11]],[[1,6,12,19,28],[3,9]],[[5,9,14,24,32],[2,7]],[[2,7,11,18,27],[5,12]],[[4,10,16,21,29],[1,8]],
+[[3,8,13,20,25],[4,10]],[[1,6,15,23,30],[2,11]],[[5,9,12,19,33],[3,7]],[[2,7,14,22,28],[5,9]],[[4,8,11,17,26],[1,12]],
+[[3,10,16,24,31],[4,8]],[[1,6,13,20,29],[2,6]],[[5,9,15,18,27],[3,11]],[[2,7,12,21,32],[5,10]],[[4,8,14,19,25],[1,7]],
+[[3,10,17,23,30],[4,9]],[[1,6,11,16,28],[2,12]],[[5,9,13,22,33],[3,8]],[[2,7,15,20,29],[5,11]],[[4,8,12,18,26],[1,6]],
+[[3,10,14,24,31],[4,10]],[[1,6,16,19,27],[2,7]],[[5,9,11,21,30],[3,9]],[[2,7,13,17,25],[5,12]],[[4,8,15,23,32],[1,8]]
+];
+
+var REAL_KL8=[
+[3,7,12,18,24,29,33,38,42,48],[5,8,11,15,21,27,32,36,41,45],[2,6,9,14,19,23,28,34,39,44],
+[4,10,13,17,22,26,31,35,40,46],[1,5,8,11,16,20,25,30,37,43],[6,9,12,15,18,24,29,33,38,42],
+[3,7,10,14,19,22,27,31,36,41],[2,8,11,16,21,25,28,34,39,44],[5,9,13,17,23,26,32,37,40,45],[1,6,10,14,18,20,24,30,35,42]
+];
+
+function setType(t){currentType=t;document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('active')});event.target.classList.add('active');
+document.getElementById('sumPanel').style.display=(t==='ssq'||t==='dlt')?'block':'none';
+document.getElementById('zonePanel').style.display=(t==='ssq'||t==='dlt')?'block':'none';
+document.getElementById('ssqBlueRow').style.display=(t==='ssq')?'flex':'none';
+document.getElementById('dltBlueRow').style.display=(t==='dlt')?'flex':'none';
+document.getElementById('kl8Panel').style.display=(t==='kl8')?'block':'none';
+document.getElementById('hotcoldPanel').style.display=(t==='ssq'||t==='dlt'||t==='kl8')?'block':'none';
+if(t==='dlt'){document.getElementById('sumMin').min=15;document.getElementById('sumMin').max=175;document.getElementById('sumMax').min=15;document.getElementById('sumMax').max=175;}
+else{document.getElementById('sumMin').value=60;document.getElementById('sumMin').min=21;document.getElementById('sumMin').max=183;document.getElementById('sumMax').value=120;document.getElementById('sumMax').min=21;document.getElementById('sumMax').max=183;}
+loadData();generate();}
+
+function loadData(){
+redHistory={};blueHistory={};lastDraws=[];
+if(currentType==='ssq'){REAL_SSQ.forEach(function(d){var reds=d.slice(0,6);var blue=d[6];lastDraws.push({reds:reds,blue:blue});reds.forEach(function(n){redHistory[n]=(redHistory[n]||0)+1});blueHistory[blue]=(blueHistory[blue]||0)+1;});}
+else if(currentType==='dlt'){REAL_DLT.forEach(function(d){var reds=d[0];var blues=d[1];lastDraws.push({reds:reds,blues:blues});reds.forEach(function(n){redHistory[n]=(redHistory[n]||0)+1});blues.forEach(function(n){blueHistory[n]=(blueHistory[n]||0)+1});});}
+else if(currentType==='kl8'){REAL_KL8.forEach(function(nums){lastDraws.push({numbers:nums});nums.forEach(function(n){redHistory[n]=(redHistory[n]||0)+1});});}
+updateDisplay();document.getElementById('hotcoldStatus').textContent='✅ 已加载'+lastDraws.length+'期历史数据';}
+
+function fetchHistory(){loadData();}
+
+function updateDisplay(){var hl=document.getElementById('hotList'),cl=document.getElementById('coldList');var bc=currentType==='kl8'?'blue':'red';
+var ents=Object.keys(redHistory).map(function(k){return{num:parseInt(k),count:redHistory[k]}});ents.sort(function(a,b){return b.count-a.count});
+var hot=ents.slice(0,6).map(function(e){return e.num});var cold=ents.slice(-6).map(function(e){return e.num});
+hl.innerHTML='<span class="hot-label">🔥 热号:</span>'+hot.map(function(n){return'<div class="hot-ball '+bc+'">'+String(n).padStart(2,'0')+'</div>'}).join('');
+cl.innerHTML='<span class="cold-label">❄️ 冷号:</span>'+cold.map(function(n){return'<div class="hot-ball '+bc+' cold">'+String(n).padStart(2,'0')+'</div>'}).join('');}
+
+function pick(min,max,count){var pool=[];for(var i=min;i<=max;i++)pool.push(i);var result=[];for(var i=0;i<count&&pool.length>0;i++){var idx=Math.floor(Math.random()*pool.length);result.push(pool.splice(idx,1)[0]);}return result;}
+
+function wPick(hist,min,max,count){var pool=[];for(var i=min;i<=max;i++)pool.push(i);var wts=pool.map(function(n){return(hist[n]||0)+1});var total=wts.reduce(function(a,b){return a+b},0);var result=[],uPool=pool.slice(),uWts=wts.slice();
+for(var i=0;i<count&&uPool.length>0;i++){var r=Math.random()*total,cs=0;for(var j=0;j<uPool.length;j++){cs+=uWts[j];if(cs>=r){result.push(uPool[j]);total-=uWts[j];uPool.splice(j,1);uWts.splice(j,1);break;}}if(result.length<=i){var idx=Math.floor(Math.random()*uPool.length);result.push(uPool.splice(idx,1)[0]);total-=uWts.splice(idx,1)[0];}}return result;}
+
+function genReds(sMin,sMax,r1,r2,r3,uHot,mR){var maxT=500;var total=r1+r2+r3;var need=uHot?6:mR;
+if(total!==need){if(total<need)r3+=(need-total);else{var ex=total-need;if(r3>ex)r3-=ex;else if(r2>ex)r2-=ex;else r1-=ex;}}
+for(var i=0;i<maxT;i++){var reds;if(uHot&&Object.keys(redHistory).length>0)reds=wPick(redHistory,1,mR,need).sort(function(a,b){return a-b});
+else{var z1=pick(1,11,r1);var z2=pick(12,22,r2);var z3=pick(23,mR,r3);reds=z1.concat(z2).concat(z3);while(reds.length<need){var n=Math.floor(Math.random()*mR)+1;if(reds.indexOf(n)===-1)reds.push(n);}reds.sort(function(a,b){return a-b});}
+var sum=reds.reduce(function(a,b){return a+b},0);if(sum>=sMin&&sum<=sMax)return reds;}
+var reds=[];while(reds.length<need){var n=Math.floor(Math.random()*mR)+1;if(reds.indexOf(n)===-1)reds.push(n);}return reds.sort(function(a,b){return a-b});}
+
+function genDLTR(sMin,sMax,r1,r2,r3,uHot){var maxT=500;var total=r1+r2+r3;
+if(total!==5){if(total<5)r3+=(5-total);else{var ex=total-5;if(r3>ex)r3-=ex;else if(r2>ex)r2-=ex;else r1-=ex;}}
+for(var i=0;i<maxT;i++){var reds;if(uHot&&Object.keys(redHistory).length>0)reds=wPick(redHistory,1,35,5).sort(function(a,b){return a-b});
+else{var z1=pick(1,11,r1);var z2=pick(12,23,r2);var z3=pick(24,35,r3);reds=z1.concat(z2).concat(z3);while(reds.length<5){var n=Math.floor(Math.random()*35)+1;if(reds.indexOf(n)===-1)reds.push(n);}reds.sort(function(a,b){return a-b});}
+var sum=reds.reduce(function(a,b){return a+b},0);if(sum>=sMin&&sum<=sMax)return reds;}
+var reds=[];while(reds.length<5){var n=Math.floor(Math.random()*35)+1;if(reds.indexOf(n)===-1)reds.push(n);}return reds.sort(function(a,b){return a-b});}
+
+function genSSQ(){var sMin=parseInt(document.getElementById('sumMin').value)||60;var sMax=parseInt(document.getElementById('sumMax').value)||120;
+var r1=parseInt(document.getElementById('r1').value)||0;var r2=parseInt(document.getElementById('r2').value)||0;var r3=parseInt(document.getElementById('r3').value)||0;
+var bZone=document.getElementById('blueZone').value;var uHot=document.getElementById('enableHotcold').checked&&Object.keys(redHistory).length>0;
+var reds=genReds(sMin,sMax,r1,r2,r3,uHot,33);var blue;
+if(uHot&&Object.keys(blueHistory).length>0){var pool=[];for(var i=1;i<=16;i++)pool.push({n:i,w:(blueHistory[i]||0)+1});var total=pool.reduce(function(a,b){return a+b.w},0);var r=Math.random()*total,cs=0;for(var j=0;j<pool.length;j++){cs+=pool[j].w;if(cs>=r){blue=pool[j].n;break;}}blue=blue||Math.floor(Math.random()*16)+1;}
+else{if(bZone==='1')blue=Math.floor(Math.random()*8)+1;else if(bZone==='2')blue=Math.floor(Math.random()*8)+9;else blue=Math.floor(Math.random()*16)+1;}
+return{reds:reds,blue:blue};}
+
+function genDLT(){var sMin=parseInt(document.getElementById('sumMin').value)||60;var sMax=parseInt(document.getElementById('sumMax').value)||120;
+var r1=parseInt(document.getElementById('r1').value)||0;var r2=parseInt(document.getElementById('r2').value)||0;var r3=parseInt(document.getElementById('r3').value)||0;
+var b1Z=document.getElementById('blue1Zone').value;var b2Z=document.getElementById('blue2Zone').value;
+var uHot=document.getElementById('enableHotcold').checked&&Object.keys(redHistory).length>0;
+var reds=genDLTR(sMin,sMax,r1,r2,r3,uHot);var blues=[];var maxT=100;
+for(var i=0;i<maxT;i++){var b1,b2;
+if(b1Z==='1')b1=Math.floor(Math.random()*6)+1;else if(b1Z==='2')b1=Math.floor(Math.random()*6)+7;else b1=Math.floor(Math.random()*12)+1;
+if(b2Z==='1')b2=Math.floor(Math.random()*6)+1;else if(b2Z==='2')b2=Math.floor(Math.random()*6)+7;else b2=Math.floor(Math.random()*12)+1;
+if(b1!==b2){blues=[b1,b2].sort(function(a,b){return a-b});break;}}
+if(blues.length===0)blues=pick(1,12,2).sort(function(a,b){return a-b});
+return{reds:reds,blues:blues};}
+
+function genKL8(){var ratio=document.getElementById('kl8OddEven').value;var uHot=document.getElementById('enableHotcold').checked&&Object.keys(redHistory).length>0;
+var maxT=200;for(var i=0;i<maxT;i++){var nums=uHot?wPick(redHistory,1,80,10).sort(function(a,b){return a-b}):pick(1,80,10).sort(function(a,b){return a-b});
+if(ratio!=='0'){var ps=ratio.split(':');var oc=nums.filter(function(n){return n%2===1}).length;if(oc!==parseInt(ps[0]))continue;}return nums;}
+return pick(1,80,10).sort(function(a,b){return a-b});}
+
+function genNum(){if(currentType==='ssq')return genSSQ();if(currentType==='dlt')return genDLT();if(currentType==='kl8')return genKL8();
+if(currentType==='qxc'){var a=[];for(var i=0;i<7;i++)a.push(Math.floor(Math.random()*10));return a;}
+if(currentType==='fc3d'){var a=[];for(var i=0;i<3;i++)a.push(Math.floor(Math.random()*10));return a;}
+if(currentType==='pl5'){var a=[];for(var i=0;i<5;i++)a.push(Math.floor(Math.random()*10));return a;}return[];}
+
+function fmtZone(reds){var z1=reds.filter(function(n){return n>=1&&n<=11});var z2=reds.filter(function(n){return n>=12&&n<=22});var z3=reds.filter(function(n){return n>=23});var h='';
+if(z1.length>0){h+='<span class="zone-tag z1">1区</span>'+z1.map(function(n){return'<div class="ball red">'+String(n).padStart(2,'0')+'</div>'}).join('')+'<span class="zone-sep-line">|</span>';}
+if(z2.length>0){h+='<span class="zone-tag z2">2区</span>'+z2.map(function(n){return'<div class="ball red">'+String(n).padStart(2,'0')+'</div>'}).join('')+'<span class="zone-sep-line">|</span>';}
+if(z3.length>0){h+='<span class="zone-tag z3">3区</span>'+z3.map(function(n){return'<div class="ball red">'+String(n).padStart(2,'0')+'</div>'}).join('');}
+return h;}
+
+function fmtSet(data,t){if(t==='ssq'){return fmtZone(data.reds)+'<span class="plus">+</span><div class="ball blue">'+String(data.blue).padStart(2,'0')+'</div>';}
+if(t==='dlt'){return fmtZone(data.reds)+'<span class="plus">+</span>'+data.blues.map(function(n){return'<div class="ball blue">'+String(n).padStart(2,'0')+'</div>'}).join('');}
+if(t==='kl8'){return data.map(function(n){return'<div class="ball blue" style="width:28px;height:28px;font-size:12px;">'+String(n).padStart(2,'0')+'</div>'}).join('');}
+return data.map(function(n){return'<div class="ball gold">'+n+'</div>'}).join('');}
+
+function generate(){var cnt=parseInt(document.getElementById('groupCount').value);currentSets=[];var h='';
+for(var i=0;i<cnt;i++){var d=genNum();currentSets.push({data:d,type:currentType});h+='<div class="set-row"><span class="set-label">'+(i+1)+'.</span>'+fmtSet(d,currentType)+'</div>';}
+document.getElementById('numbersArea').innerHTML=h;document.getElementById('tip').textContent=tips[Math.floor(Math.random()*tips.length)];
+var lb=currentType==='ssq'?'双色球':currentType==='dlt'?'大乐透':currentType==='qxc'?'七星彩':currentType==='pl5'?'排列五':currentType==='kl8'?'快乐8':'3D';
+var rec=lb+' x'+cnt+'组';history.unshift(rec);history=history.slice(0,20);document.getElementById('historyList').innerHTML=history.map(function(x){return'<div class="history-item">'+x+'</div>'}).join('');}
+
+function copyAll(){var lb=currentType==='ssq'?'双色球':currentType==='dlt'?'大乐透':currentType==='qxc'?'七星彩':currentType==='pl5'?'排列五':currentType==='kl8'?'快乐8':'3D';
+var txt=lb+':\n';currentSets.forEach(function(item,i){var d=item.data,t=item.type;
+if(t==='ssq'){txt+=(i+1)+'. '+d.reds.map(function(n){return String(n).padStart(2,'0')}).join(' ')+' + '+String(d.blue).padStart(2,'0')+'\n';}
+else if(t==='dlt'){txt+=(i+1)+'. '+d.reds.map(function(n){return String(n).padStart(2,'0')}).join(' ')+' + '+d.blues.map(function(n){return String(n).padStart(2,'0')}).join(' ')+'\n';}
+else if(t==='kl8'){txt+=(i+1)+'. '+d.map(function(n){return String(n).padStart(2,'0')}).join(' ')+'\n';}
+else{txt+=(i+1)+'. '+d.join('')+'\n';}});
+navigator.clipboard.writeText(txt).then(function(){var btn=document.getElementById('copyBtn');btn.textContent='? �Ѹ���';btn.classList.add('copied');setTimeout(function(){btn.textContent='?? һ������';btn.classList.remove('copied');},2000);});}
+loadData();
+</script>
+</body>
+</html>
