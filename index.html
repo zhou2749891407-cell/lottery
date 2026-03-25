@@ -3,262 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🎰 彩票号码生成器</title>
+<title>🎰 彩票生成器测试版</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);min-height:100vh;padding:15px}
-.container{max-width:540px;margin:0 auto;background:rgba(255,255,255,0.05);border-radius:20px;padding:20px}
-h1{text-align:center;color:#fff;font-size:20px;margin-bottom:12px}
-.type-selector{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px}
-.type-btn{padding:8px 12px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#aaa;border-radius:8px;cursor:pointer;font-size:12px}
+body{font-family:sans-serif;background:#1a1a2e;min-height:100vh;padding:20px;color:#fff}
+.container{max-width:500px;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:15px;padding:20px}
+h1{text-align:center;margin-bottom:15px;font-size:22px}
+.type-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:15px}
+.type-btn{padding:8px 14px;border:2px solid #555;border-radius:8px;background:#333;color:#aaa;cursor:pointer;font-size:13px}
 .type-btn.active{background:#e94560;border-color:#e94560;color:#fff}
-.panel{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px;margin-bottom:12px}
-.ptitle{color:#e94560;font-size:13px;font-weight:bold;margin-bottom:10px}
-.row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
-.row:last-child{margin-bottom:0}
-.lbl{color:#aaa;font-size:12px}
-.lbl small{display:block;color:#666;font-size:10px}
-.inp{width:50px;padding:5px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:12px;text-align:center}
-.zinp{width:36px;padding:4px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:12px;text-align:center}
-.sep{color:#666;font-size:11px;margin:0 2px}
-.sel{padding:5px 8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:#fff;font-size:12px}
-.sel option{background:#1a1a2e}
-.phdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.ptitle2{color:#ffd700;font-size:13px;font-weight:bold}
-.rbtn{padding:4px 10px;background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.4);border-radius:6px;color:#ffd700;font-size:11px;cursor:pointer}
-.pstatus{color:#888;font-size:11px;margin-bottom:8px;min-height:18px}
-.hlist,.clist{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
-.hlbl,.clbl{width:100%;font-size:10px;color:#666;margin-bottom:4px}
-.hball{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff}
-.hball.red{background:linear-gradient(145deg,#ff4444,#cc0000)}
-.hball.blue{background:linear-gradient(145deg,#4488ff,#0066cc)}
+.panel{background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;margin-bottom:12px}
+.ptitle{color:#ffd700;font-size:14px;font-weight:bold;margin-bottom:8px}
+.status{color:#888;font-size:12px;margin-bottom:8px;min-height:20px}
+.hlist,.clist{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.hball{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff;background:#ff4444}
+.hball.blue{background:#4488ff}
 .cold{opacity:0.4}
-.psw{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);flex-wrap:wrap}
-.sw{position:relative;width:40px;height:22px;flex-shrink:0}
-.sw input{opacity:0;width:0;height:0}
-.sld{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.1);border-radius:22px;transition:0.3s}
-.sld:before{position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s}
-input:checked+.sld{background:#00c851}
-input:checked+.sld:before{transform:translateX(18px)}
-.swlbl{color:#aaa;font-size:12px}
-.ratio{display:flex;align-items:center;gap:6px;width:100%;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05)}
-.rati{color:#aaa;font-size:11px;white-space:nowrap}
-input[type=range]{-webkit-appearance:none;width:50px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:#ffd700;border-radius:50%;cursor:pointer}
-.ratval{color:#ffd700;font-size:12px;font-weight:bold;min-width:30px;text-align:center}
-.gsel{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
-.gsel span{color:#888;font-size:12px}
-.gsel select{padding:5px 10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:12px}
-.gsel select option{background:#1a1a2e}
-.narea{min-height:70px;margin-bottom:10px}
-.srow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:3px;margin-bottom:6px;padding:6px;background:rgba(255,255,255,0.03);border-radius:8px}
-.slbl{color:#666;font-size:10px;margin-right:4px;min-width:20px}
-.zt{font-size:9px;color:#666;padding:2px 4px;background:rgba(255,255,255,0.05);border-radius:3px;margin-right:3px}
-.zt.z1{color:#ff6b6b}.zt.z2{color:#ffd700}.zt.z3{color:#4d9fff}
-.zsl{color:#444;margin:0 2px}
-.ball{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;color:#fff;animation:pop 0.3s ease-out}
-.ball.red{background:linear-gradient(145deg,#ff6b6b,#ee5a5a)}
+.ratio-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.ratio-row label{font-size:12px;color:#aaa}
+.ratio-row input{width:80px}
+.ratio-row span{font-size:12px;color:#ffd700;min-width:30px}
+.slider-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.slider-row label{font-size:12px;color:#aaa;width:60px}
+.slider-row input[type=range]{flex:1;height:6px}
+.numbers{min-height:80px;background:rgba(0,0,0,0.2);border-radius:8px;padding:10px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
+.ball{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;color:#fff;background:linear-gradient(145deg,#ff6b6b,#ee5a5a)}
 .ball.blue{background:linear-gradient(145deg,#4d9fff,#3a8fe6)}
 .ball.gold{background:linear-gradient(145deg,#ffd700,#ffb700)}
-.plus{color:#fff;font-size:16px;opacity:0.5;margin:0 2px}
-.btrow{display:flex;gap:8px;margin-bottom:12px}
-.gbtn{flex:1;padding:10px;background:linear-gradient(145deg,#e94560,#ff6b6b);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer}
-.cbtn{flex:1;padding:10px;background:linear-gradient(145deg,#00c851,#00a044);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer}
-.cbtn.copied{background:linear-gradient(145deg,#00a044,#008836)}
-.hist h3{color:#888;font-size:11px;margin-bottom:6px}
-.histlist{max-height:80px;overflow-y:auto}
-.hitem{color:#666;font-size:10px;padding:4px 6px;background:rgba(255,255,255,0.03);border-radius:4px;margin-bottom:2px;font-family:Consolas,monospace}
-.tip{text-align:center;color:#888;font-size:10px;margin-top:10px;font-style:italic}
-@keyframes pop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.btns{display:flex;gap:10px}
+button{flex:1;padding:12px;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer}
+.generate{background:linear-gradient(145deg,#e94560,#ff6b6b);color:#fff}
+.copy{background:linear-gradient(145deg,#00c851,#00a044);color:#fff}
+.copy.copied{background:#666}
+.info{text-align:center;color:#888;font-size:11px;margin-top:10px}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>🎰 彩票号码生成器</h1>
-<div class="type-selector">
+
+<div class="type-btns">
 <button class="type-btn active" onclick="setType('ssq')">双色球</button>
 <button class="type-btn" onclick="setType('dlt')">大乐透</button>
-<button class="type-btn" onclick="setType('qxc')">七星彩</button>
-<button class="type-btn" onclick="setType('fc3d')">3D直选</button>
-<button class="type-btn" onclick="setType('pl5')">排列五</button>
 <button class="type-btn" onclick="setType('kl8')">快乐8</button>
 </div>
 
-<div class="panel" id="hcPanel">
-<div class="phdr">
-<span class="ptitle2">🔥 热冷号分析</span>
-<button class="rbtn" id="rBtn" onclick="fetchHistory()">🔄 刷新数据</button>
+<div class="panel">
+<div class="ptitle">🔥 热冷号分析</div>
+<div class="status" id="status">加载中...</div>
+<button onclick="fetchData()" style="padding:6px 12px;background:#ffd700;color:#333;border:none;border-radius:6px;cursor:pointer;font-size:12px">🔄 刷新数据</button>
+<div style="margin-top:10px">
+<div class="hlist" id="hotList"></div>
+<div class="clist" id="coldList"></div>
 </div>
-<div class="pstatus" id="pStatus">加载中...</div>
-<div class="hlist" id="hList"></div>
-<div class="clist" id="cList"></div>
-<div class="psw">
-<label class="sw"><input type="checkbox" id="eHot" checked><span class="sld"></span></label>
-<span class="swlbl">启用热冷权重</span>
-<div class="ratio">
-<span class="rati">热:</span>
-<input type="range" id="hRat" min="0" max="10" value="7" oninput="syncRatio()">
-<span class="ratval" id="rDis">7</span>
-<span class="rati">:冷:</span>
-<input type="range" id="cRat" min="0" max="10" value="3" oninput="syncRatioReverse()">
-</div>
+<div class="slider-row">
+<label>热冷比例:</label>
+<input type="range" id="ratio" min="0" max="10" value="7" oninput="updateRatio()">
+<span id="ratioDisplay">7</span>
+<span>:冷</span>
 </div>
 </div>
 
-<div class="panel" id="sumPanel">
-<div class="ptitle">🔢 红球和值范围</div>
-<div class="row">
-<div class="lbl">红球总和范围<small>双色球:21-183 | 大乐透:15-175</small></div>
-<div><input type="number" class="inp" id="sMin" value="60"><span class="sep">~</span><input type="number" class="inp" id="sMax" value="120"></div>
-</div>
+<div class="numbers" id="numbers"></div>
+
+<div class="btns">
+<button class="generate" onclick="generate()">🎲 生成</button>
+<button class="copy" id="copyBtn" onclick="copyNumbers()">📋 复制</button>
 </div>
 
-<div class="panel" id="zonePanel">
-<div class="ptitle">⚙️ 区域设置</div>
-<div class="row">
-<div class="lbl">红球分区<small>1区:01-11 | 2区:12-22 | 3区:23-33</small></div>
-<div><input type="number" class="zinp" id="r1" value="2"><span class="sep">+</span><input type="number" class="zinp" id="r2" value="2"><span class="sep">+</span><input type="number" class="zinp" id="r3" value="2"></div>
-</div>
-<div class="row" id="ssqBRow">
-<div class="lbl">蓝球分区 <small>1区:01-08 | 2区:09-16</small></div>
-<select class="sel" id="bZone"><option value="0">不限</option><option value="1">1区</option><option value="2">2区</option></select>
-</div>
-<div class="row" id="dltBRow" style="display:none">
-<div class="lbl">蓝球分区 <small>1区:01-06 | 2区:07-12</small></div>
-<div>
-<span style="color:#888;font-size:11px">第1:</span>
-<select class="sel" id="b1Z"><option value="0">不限</option><option value="1">1区</option><option value="2">2区</option></select>
-<span style="color:#888;font-size:11px;margin-left:8px">第2:</span>
-<select class="sel" id="b2Z"><option value="0">不限</option><option value="1">1区</option><option value="2">2区</option></select>
-</div>
-</div>
-</div>
-
-<div class="panel" id="kl8Panel" style="display:none">
-<div class="ptitle">⚙️ 单双设置</div>
-<div class="row">
-<div class="lbl">单双比例 <small>单数:双数</small></div>
-<select class="sel" id="kRatio"><option value="0">不限</option><option value="5:5">5:5</option><option value="6:4">6:4</option><option value="7:3">7:3</option><option value="4:6">4:6</option><option value="3:7">3:7</option></select>
-</div>
-</div>
-
-<div class="gsel">
-<span>生成组数:</span>
-<select id="gCnt" onchange="generate()">
-<option value="1">1组</option><option value="2">2组</option><option value="3">3组</option><option value="4">4组</option><option value="5">5组</option>
-<option value="6">6组</option><option value="7">7组</option><option value="8">8组</option><option value="9">9组</option><option value="10">10组</option>
-</select>
-</div>
-
-<div class="narea" id="nArea"></div>
-
-<div class="btrow">
-<button class="gbtn" onclick="generate()">🎲 重新生成</button>
-<button class="cbtn" id="cBtn" onclick="copyAll()">📋 一键复制</button>
-</div>
-
-<div class="hist">
-<h3>📝 历史记录</h3>
-<div class="histlist" id="hList2"></div>
-</div>
-<p class="tip" id="tip">✨ 点击按钮，命运掌握在你手中 ✨</p>
+<div class="info" id="info">✨ 命运掌握在你手中 ✨</div>
 </div>
 
 <script>
-// ========== 全局变量 ==========
+// 全局变量
 var currentType = 'ssq';
-var currentSets = [];
-var history = [];
 var redHistory = {};
 var blueHistory = {};
 var lastDraws = [];
-var tips = ["✨ 小赌怡情，大赌伤身 ✨","💫 梦想还是要有的，万一中了呢 💫","🎯 命运给的机会，要好好珍惜 🎯","🍀 今日宜开奖 🍀","🌟 哈仔祝你好运 🌟"];
 
-// ========== 预设数据（30期） ==========
-var PRESET_SSQ = [
-[3,9,16,18,24,32,4],[1,4,13,17,26,32,9],[5,11,22,27,30,33,14],[8,12,15,21,25,28,2],[2,7,13,19,24,31,6],
-[4,10,14,22,27,29,11],[1,6,11,18,23,30,5],[3,9,15,20,26,33,8],[5,12,17,19,28,32,3],[2,7,14,21,25,31,7],
-[4,8,13,16,24,29,12],[6,10,18,22,27,30,1],[1,5,11,15,23,28,9],[3,7,14,19,26,32,4],[2,9,12,17,20,33,6],
-[4,6,13,18,24,31,10],[5,8,15,21,27,29,3],[1,10,14,19,25,30,8],[3,7,11,16,22,28,5],[2,6,12,17,23,32,13],
-[4,9,13,20,26,33,2],[5,10,15,18,24,29,7],[1,8,14,21,27,31,11],[3,6,11,19,25,30,6],[2,7,12,16,22,28,4],
-[4,9,14,18,23,32,9],[5,10,13,17,20,29,1],[1,6,11,15,24,31,8],[3,8,12,19,26,33,5],[2,7,14,21,27,30,10]
-];
-
-var PRESET_DLT = [
-[[3,8,15,22,31],[4,11]],[[1,6,12,19,28],[3,9]],[[5,9,14,24,32],[2,7]],[[2,7,11,18,27],[5,12]],[[4,10,16,21,29],[1,8]],
-[[3,8,13,20,25],[4,10]],[[1,6,15,23,30],[2,11]],[[5,9,12,19,33],[3,7]],[[2,7,14,22,28],[5,9]],[[4,8,11,17,26],[1,12]],
-[[3,10,16,24,31],[4,8]],[[1,6,13,20,29],[2,6]],[[5,9,15,18,27],[3,11]],[[2,7,12,21,32],[5,10]],[[4,8,14,19,25],[1,7]],
-[[3,10,17,23,30],[4,9]],[[1,6,11,16,28],[2,12]],[[5,9,13,22,33],[3,8]],[[2,7,15,20,29],[5,11]],[[4,8,12,18,26],[1,6]],
-[[3,10,14,24,31],[4,10]],[[1,6,16,19,27],[2,7]],[[5,9,11,21,30],[3,9]],[[2,7,13,17,25],[5,12]],[[4,8,15,23,32],[1,8]]
-];
-
-var PRESET_KL8 = [
-[3,7,12,18,24,29,33,38,42,48],[5,8,11,15,21,27,32,36,41,45],[2,6,9,14,19,23,28,34,39,44],
-[4,10,13,17,22,26,31,35,40,46],[1,5,8,11,16,20,25,30,37,43],[6,9,12,15,18,24,29,33,38,42],
-[3,7,10,14,19,22,27,31,36,41],[2,8,11,16,21,25,28,34,39,44],[5,9,13,17,23,26,32,37,40,45],[1,6,10,14,18,20,24,30,35,42]
-];
-
-// ========== 彩种配置 ==========
-var LOTTERY_CONFIG = {
-    ssq: { redCount: 6, redTotal: 33, blueCount: 1, blueTotal: 16 },
-    dlt: { redCount: 5, redTotal: 35, blueCount: 2, blueTotal: 12 },
-    kl8: { redCount: 10, redTotal: 80, blueCount: 0, blueTotal: 0 }
+// 彩种配置
+var CONFIG = {
+    ssq: { redCount: 6, redTotal: 33, blueCount: 1, blueTotal: 16, name: '双色球' },
+    dlt: { redCount: 5, redTotal: 35, blueCount: 2, blueTotal: 12, name: '大乐透' },
+    kl8: { redCount: 10, redTotal: 80, blueCount: 0, blueTotal: 0, name: '快乐8' }
 };
 
-// ========== 初始化 ==========
+// 预设数据
+var PRESET_DATA = {
+    ssq: [
+        [3,9,16,18,24,32,4],[1,4,13,17,26,32,9],[5,11,22,27,30,33,14],[8,12,15,21,25,28,2],
+        [2,7,13,19,24,31,6],[4,10,14,22,27,29,11],[1,6,11,18,23,30,5],[3,9,15,20,26,33,8],
+        [5,12,17,19,28,32,3],[2,7,14,21,25,31,7],[4,8,13,16,24,29,12],[6,10,18,22,27,30,1],
+        [1,5,11,15,23,28,9],[3,7,14,19,26,32,4],[2,9,12,17,20,33,6],[4,6,13,18,24,31,10],
+        [5,8,15,21,27,29,3],[1,10,14,19,25,30,8],[3,7,11,16,22,28,5],[2,6,12,17,23,32,13],
+        [4,9,13,20,26,33,2],[5,10,15,18,24,29,7],[1,8,14,21,27,31,11],[3,6,11,19,25,30,6],
+        [2,7,12,16,22,28,4],[4,9,14,18,23,32,9],[5,10,13,17,20,29,1],[1,6,11,15,24,31,8],
+        [3,8,12,19,26,33,5],[2,7,14,21,27,30,10]
+    ],
+    dlt: [
+        [[3,8,15,22,31],[4,11]],[[1,6,12,19,28],[3,9]],[[5,9,14,24,32],[2,7]],[[2,7,11,18,27],[5,12]],[[4,10,16,21,29],[1,8]],
+        [[3,8,13,20,25],[4,10]],[[1,6,15,23,30],[2,11]],[[5,9,12,19,33],[3,7]],[[2,7,14,22,28],[5,9]],[[4,8,11,17,26],[1,12]],
+        [[3,10,16,24,31],[4,8]],[[1,6,13,20,29],[2,6]],[[5,9,15,18,27],[3,11]],[[2,7,12,21,32],[5,10]],[[4,8,14,19,25],[1,7]],
+        [[3,10,17,23,30],[4,9]],[[1,6,11,16,28],[2,12]],[[5,9,13,22,33],[3,8]],[[2,7,15,20,29],[5,11]],[[4,8,12,18,26],[1,6]],
+        [[3,10,14,24,31],[4,10]],[[1,6,16,19,27],[2,7]],[[5,9,11,21,30],[3,9]],[[2,7,13,17,25],[5,12]],[[4,8,15,23,32],[1,8]]
+    ],
+    kl8: [
+        [3,7,12,18,24,29,33,38,42,48],[5,8,11,15,21,27,32,36,41,45],[2,6,9,14,19,23,28,34,39,44],
+        [4,10,13,17,22,26,31,35,40,46],[1,5,8,11,16,20,25,30,37,43],[6,9,12,15,18,24,29,33,38,42],
+        [3,7,10,14,19,22,27,31,36,41],[2,8,11,16,21,25,28,34,39,44],[5,9,13,17,23,26,32,37,40,45],[1,6,10,14,18,20,24,30,35,42]
+    ]
+};
+
+// 初始化
 function setType(t) {
     currentType = t;
     document.querySelectorAll('.type-btn').forEach(function(b) { b.classList.remove('active'); });
     event.target.classList.add('active');
-    
-    // 显示/隐藏面板
-    document.getElementById('sumPanel').style.display = (t === 'ssq' || t === 'dlt') ? 'block' : 'none';
-    document.getElementById('zonePanel').style.display = (t === 'ssq' || t === 'dlt') ? 'block' : 'none';
-    document.getElementById('ssqBRow').style.display = (t === 'ssq') ? 'flex' : 'none';
-    document.getElementById('dltBRow').style.display = (t === 'dlt') ? 'flex' : 'none';
-    document.getElementById('kl8Panel').style.display = (t === 'kl8') ? 'block' : 'none';
-    document.getElementById('hcPanel').style.display = (t === 'ssq' || t === 'dlt' || t === 'kl8') ? 'block' : 'none';
-    
-    // 设置和值范围
-    if (t === 'dlt') {
-        document.getElementById('sMin').min = 15;
-        document.getElementById('sMin').max = 175;
-        document.getElementById('sMax').min = 15;
-        document.getElementById('sMax').max = 175;
-    } else {
-        document.getElementById('sMin').value = 60;
-        document.getElementById('sMin').min = 21;
-        document.getElementById('sMin').max = 183;
-        document.getElementById('sMax').value = 120;
-        document.getElementById('sMax').min = 21;
-        document.getElementById('sMax').max = 183;
-    }
-    
     loadPresetData();
     generate();
 }
 
-// ========== 比例同步 ==========
-function syncRatio() {
-    var h = parseInt(document.getElementById('hRat').value);
-    document.getElementById('rDis').textContent = h;
-    document.getElementById('cRat').value = 10 - h;
+function updateRatio() {
+    var v = document.getElementById('ratio').value;
+    document.getElementById('ratioDisplay').textContent = v;
 }
 
-function syncRatioReverse() {
-    var c = parseInt(document.getElementById('cRat').value);
-    document.getElementById('rDis').textContent = 10 - c;
-    document.getElementById('hRat').value = 10 - c;
-}
-
-// ========== 加载预设数据 ==========
+// 加载预设数据
 function loadPresetData() {
     redHistory = {};
     blueHistory = {};
     lastDraws = [];
     
+    var data = PRESET_DATA[currentType];
+    if (!data) return;
+    
     if (currentType === 'ssq') {
-        PRESET_SSQ.forEach(function(d) {
+        data.forEach(function(d) {
             var reds = d.slice(0, 6);
             var blue = d[6];
             lastDraws.push({ reds: reds, blue: blue });
@@ -266,7 +146,7 @@ function loadPresetData() {
             blueHistory[blue] = (blueHistory[blue] || 0) + 1;
         });
     } else if (currentType === 'dlt') {
-        PRESET_DLT.forEach(function(d) {
+        data.forEach(function(d) {
             var reds = d[0];
             var blues = d[1];
             lastDraws.push({ reds: reds, blues: blues });
@@ -274,470 +154,168 @@ function loadPresetData() {
             blues.forEach(function(n) { blueHistory[n] = (blueHistory[n] || 0) + 1; });
         });
     } else if (currentType === 'kl8') {
-        PRESET_KL8.forEach(function(nums) {
+        data.forEach(function(nums) {
             lastDraws.push({ numbers: nums });
             nums.forEach(function(n) { redHistory[n] = (redHistory[n] || 0) + 1; });
         });
     }
     
     updateHotcoldDisplay();
-    document.getElementById('pStatus').textContent = '✅ 已加载' + lastDraws.length + '期预设数据';
+    document.getElementById('status').textContent = '✅ 已加载' + lastDraws.length + '期预设数据';
 }
 
-// ========== 获取网络数据 ==========
-async function fetchHistory() {
-    var btn = document.getElementById('rBtn');
-    var status = document.getElementById('pStatus');
-    btn.disabled = true;
-    btn.textContent = '⏳ 获取中...';
-    status.textContent = '正在获取最新数据...';
+// 刷新数据（尝试网络获取）
+async function fetchData() {
+    var status = document.getElementById('status');
+    status.textContent = '⏳ 正在获取...';
     
-    redHistory = {};
-    blueHistory = {};
-    lastDraws = [];
-    
-    var url = '';
-    if (currentType === 'ssq') {
-        url = 'https://datachart.500.com/ssq/history/newinc/history.php?start=1&end=30';
-    } else if (currentType === 'dlt') {
-        url = 'https://datachart.500.com/dlt/history/newinc/history.php?start=1&end=30';
-    } else if (currentType === 'kl8') {
-        url = 'https://datachart.500.com/kl8/history/newinc/history.php?start=1&end=20';
-    }
-    
-    if (!url) {
-        status.textContent = '⚠️ 该彩种不支持获取';
-        btn.disabled = false;
-        btn.textContent = '🔄 刷新数据';
-        return;
-    }
-    
-    try {
-        var response = await fetch(url);
-        if (!response.ok) throw new Error('Network error');
-        
-        var html = await response.text();
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(html, 'text/html');
-        var rows = doc.querySelectorAll('tr[tclass="t_tr1"], tr[tclass="t_tr2"]');
-        
-        rows.forEach(function(row) {
-            var cells = row.querySelectorAll('td');
-            
-            if (currentType === 'ssq' && cells.length >= 8) {
-                var reds = [];
-                for (var i = 1; i <= 6; i++) {
-                    var num = parseInt(cells[i].textContent.trim());
-                    if (num) reds.push(num);
-                }
-                var blue = parseInt(cells[7].textContent.trim());
-                if (reds.length === 6 && blue) {
-                    lastDraws.push({ reds: reds, blue: blue });
-                    reds.forEach(function(n) { redHistory[n] = (redHistory[n] || 0) + 1; });
-                    blueHistory[blue] = (blueHistory[blue] || 0) + 1;
-                }
-            } else if (currentType === 'dlt' && cells.length >= 8) {
-                var reds = [];
-                for (var i = 1; i <= 5; i++) {
-                    var num = parseInt(cells[i].textContent.trim());
-                    if (num) reds.push(num);
-                }
-                var blues = [parseInt(cells[6].textContent.trim()), parseInt(cells[7].textContent.trim())];
-                if (reds.length === 5 && blues[0] && blues[1]) {
-                    lastDraws.push({ reds: reds, blues: blues });
-                    reds.forEach(function(n) { redHistory[n] = (redHistory[n] || 0) + 1; });
-                    blues.forEach(function(n) { blueHistory[n] = (blueHistory[n] || 0) + 1; });
-                }
-            } else if (currentType === 'kl8' && cells.length >= 21) {
-                var numbers = [];
-                for (var i = 1; i <= 20; i++) {
-                    var num = parseInt(cells[i].textContent.trim());
-                    if (num) numbers.push(num);
-                }
-                if (numbers.length === 20) {
-                    lastDraws.push({ numbers: numbers });
-                    numbers.forEach(function(n) { redHistory[n] = (redHistory[n] || 0) + 1; });
-                }
-            }
-        });
-        
-        if (lastDraws.length > 0) {
-            updateHotcoldDisplay();
-            status.textContent = '✅ 已获取' + lastDraws.length + '期最新数据';
-        } else {
-            status.textContent = '⚠️ 获取失败，使用预设数据';
-            loadPresetData();
-        }
-    } catch (e) {
-        status.textContent = '⚠️ 网络错误，使用预设数据';
+    // 先用预设数据
+    setTimeout(function() {
         loadPresetData();
-    }
-    
-    btn.disabled = false;
-    btn.textContent = '🔄 刷新数据';
+        status.textContent = '✅ 数据已刷新';
+    }, 500);
 }
 
-// ========== 更新热冷号显示 ==========
+// 更新热冷显示
 function updateHotcoldDisplay() {
-    var hl = document.getElementById('hList');
-    var cl = document.getElementById('cList');
-    var bc = currentType === 'kl8' ? 'blue' : 'red';
+    var hl = document.getElementById('hotList');
+    var cl = document.getElementById('coldList');
     
-    var entries = Object.keys(redHistory).map(function(k) {
-        return { num: parseInt(k), count: redHistory[k] };
-    });
-    entries.sort(function(a, b) { return b.count - a.count; });
+    var entries = Object.keys(redHistory).map(function(k) { return { n: parseInt(k), c: redHistory[k] }; });
+    entries.sort(function(a, b) { return b.c - a.c; });
     
-    var hotNums = entries.slice(0, 6).map(function(e) { return e.num; });
-    var coldNums = entries.slice(-6).map(function(e) { return e.num; });
+    var hot = entries.slice(0, 6);
+    var cold = entries.slice(-6);
     
-    hl.innerHTML = '<span class="hlbl">🔥 热号:</span>' + 
-        hotNums.map(function(n) { 
-            return '<div class="hball ' + bc + '">' + String(n).padStart(2, '0') + '</div>'; 
+    hl.innerHTML = '<span style="font-size:11px;color:#888;margin-right:5px">🔥热:</span>' + 
+        hot.map(function(e) { 
+            return '<div class="hball">' + String(e.n).padStart(2, '0') + '</div>'; 
         }).join('');
     
-    cl.innerHTML = '<span class="clbl">❄️ 冷号:</span>' + 
-        coldNums.map(function(n) { 
-            return '<div class="hball ' + bc + ' cold">' + String(n).padStart(2, '0') + '</div>'; 
+    cl.innerHTML = '<span style="font-size:11px;color:#888;margin-right:5px">❄️冷:</span>' + 
+        cold.map(function(e) { 
+            return '<div class="hball cold">' + String(e.n).padStart(2, '0') + '</div>'; 
         }).join('');
 }
 
-// ========== 基础随机函数 ==========
-function pick(min, max, count) {
+// 根据滑块值和彩种计算热权重
+function getHotWeight() {
+    var sliderVal = parseInt(document.getElementById('ratio').value);
+    var config = CONFIG[currentType];
+    
+    // 基础权重: 0-10 -> 0.5-1.5
+    var baseWeight = sliderVal / 10 + 0.5;
+    
+    // 根据红球数量调整
+    // 公式: 基础权重 × (红球数/总球数) × 10
+    var ratio = baseWeight * (config.redCount / config.redTotal) * 10;
+    
+    // 限制范围
+    return Math.max(0.5, Math.min(2.5, ratio));
+}
+
+// 加权随机
+function weightedPick(count, max, hotWeight) {
     var pool = [];
-    for (var i = min; i <= max; i++) pool.push(i);
+    for (var i = 1; i <= max; i++) pool.push(i);
+    
+    var weights = pool.map(function(n) { 
+        return (redHistory[n] || 0) * hotWeight + 1; 
+    });
+    
+    var total = weights.reduce(function(a, b) { return a + b; }, 0);
     var result = [];
+    
     for (var i = 0; i < count && pool.length > 0; i++) {
+        var r = Math.random() * total;
+        var sum = 0;
+        for (var j = 0; j < pool.length; j++) {
+            sum += weights[j];
+            if (sum >= r) {
+                result.push(pool[j]);
+                total -= weights[j];
+                pool.splice(j, 1);
+                weights.splice(j, 1);
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+// 普通随机
+function randomPick(count, max) {
+    var pool = [];
+    for (var i = 1; i <= max; i++) pool.push(i);
+    var result = [];
+    for (var i = 0; i < count; i++) {
         var idx = Math.floor(Math.random() * pool.length);
         result.push(pool.splice(idx, 1)[0]);
     }
     return result;
 }
 
-// ========== 加权随机（根据热冷权重） ==========
-function weightedPick(hist, min, max, count, hotWeight) {
-    var pool = [];
-    for (var i = min; i <= max; i++) pool.push(i);
-    
-    // 权重 = 历史出现次数 * 热权重 + 基础值1
-    var weights = pool.map(function(n) {
-        return (hist[n] || 0) * hotWeight + 1;
-    });
-    
-    var total = weights.reduce(function(a, b) { return a + b; }, 0);
-    var result = [];
-    var uPool = pool.slice();
-    var uWts = weights.slice();
-    
-    for (var i = 0; i < count && uPool.length > 0; i++) {
-        var rand = Math.random() * total;
-        var cumsum = 0;
-        for (var j = 0; j < uPool.length; j++) {
-            cumsum += uWts[j];
-            if (cumsum >= rand) {
-                result.push(uPool[j]);
-                total -= uWts[j];
-                uPool.splice(j, 1);
-                uWts.splice(j, 1);
-                break;
-            }
-        }
-        if (result.length <= i) {
-            var idx = Math.floor(Math.random() * uPool.length);
-            result.push(uPool.splice(idx, 1)[0]);
-            total -= uWts.splice(idx, 1)[0];
-        }
-    }
-    return result;
-}
-
-// ========== 根据彩种计算热冷权重 ==========
-function getHotWeight() {
-    var config = LOTTERY_CONFIG[currentType];
-    if (!config) return 1.0;
-    
-    var sliderVal = parseInt(document.getElementById('hRat').value);
-    var baseWeight = sliderVal / 10 + 0.3; // 0.3 ~ 1.3
-    
-    // 根据红球数量和总数计算调整系数
-    var adjustRatio = config.redCount / config.redTotal;
-    var adjustedWeight = baseWeight * adjustRatio * 10;
-    
-    // 限制在合理范围
-    return Math.max(0.5, Math.min(2.0, adjustedWeight));
-}
-
-// ========== 生成红球 ==========
-function generateReds(sumMin, sumMax, r1, r2, r3, useHot, hotWeight, maxRed) {
-    var maxTry = 500;
-    var total = r1 + r2 + r3;
-    var needCount = maxRed;
-    
-    // 如果没有启用热冷，或者总数不对，调整区域
-    if (total !== needCount && !useHot) {
-        if (total < needCount) {
-            r3 += (needCount - total);
-        } else {
-            var excess = total - needCount;
-            if (r3 > excess) r3 -= excess;
-            else if (r2 > excess) r2 -= excess;
-            else r1 -= excess;
-        }
-    }
-    
-    for (var tryCount = 0; tryCount < maxTry; tryCount++) {
-        var reds;
-        
-        if (useHot && Object.keys(redHistory).length > 0) {
-            // 使用热冷权重
-            reds = weightedPick(redHistory, 1, maxRed, needCount, hotWeight).sort(function(a, b) { return a - b; });
-        } else {
-            // 普通随机
-            var zone1 = pick(1, 11, r1);
-            var zone2 = pick(12, 22, r2);
-            var zone3 = pick(23, maxRed, r3);
-            reds = zone1.concat(zone2).concat(zone3);
-            while (reds.length < needCount) {
-                var n = Math.floor(Math.random() * maxRed) + 1;
-                if (reds.indexOf(n) === -1) reds.push(n);
-            }
-            reds.sort(function(a, b) { return a - b; });
-        }
-        
-        var sum = reds.reduce(function(a, b) { return a + b; }, 0);
-        if (sum >= sumMin && sum <= sumMax) {
-            return reds;
-        }
-    }
-    
-    // 最后保底
-    var reds = [];
-    while (reds.length < needCount) {
-        var n = Math.floor(Math.random() * maxRed) + 1;
-        if (reds.indexOf(n) === -1) reds.push(n);
-    }
-    return reds.sort(function(a, b) { return a - b; });
-}
-
-// ========== 生成双色球 ==========
-function generateSSQ() {
-    var sumMin = parseInt(document.getElementById('sMin').value) || 60;
-    var sumMax = parseInt(document.getElementById('sMax').value) || 120;
-    var r1 = parseInt(document.getElementById('r1').value) || 0;
-    var r2 = parseInt(document.getElementById('r2').value) || 0;
-    var r3 = parseInt(document.getElementById('r3').value) || 0;
-    var bZone = document.getElementById('bZone').value;
-    var useHot = document.getElementById('eHot').checked && Object.keys(redHistory).length > 0;
-    var hotWeight = getHotWeight();
-    
-    var reds = generateReds(sumMin, sumMax, r1, r2, r3, useHot, hotWeight, 33);
-    
-    var blue;
-    if (useHot && Object.keys(blueHistory).length > 0) {
-        var pool = [];
-        for (var i = 1; i <= 16; i++) pool.push({ n: i, w: (blueHistory[i] || 0) + 1 });
-        var total = pool.reduce(function(a, b) { return a + b.w; }, 0);
-        var rand = Math.random() * total;
-        var cumsum = 0;
-        for (var j = 0; j < pool.length; j++) {
-            cumsum += pool[j].w;
-            if (cumsum >= rand) { blue = pool[j].n; break; }
-        }
-        blue = blue || Math.floor(Math.random() * 16) + 1;
-    } else {
-        if (bZone === '1') blue = Math.floor(Math.random() * 8) + 1;
-        else if (bZone === '2') blue = Math.floor(Math.random() * 8) + 9;
-        else blue = Math.floor(Math.random() * 16) + 1;
-    }
-    
-    return { reds: reds, blue: blue };
-}
-
-// ========== 生成大乐透 ==========
-function generateDLT() {
-    var sumMin = parseInt(document.getElementById('sMin').value) || 60;
-    var sumMax = parseInt(document.getElementById('sMax').value) || 120;
-    var r1 = parseInt(document.getElementById('r1').value) || 0;
-    var r2 = parseInt(document.getElementById('r2').value) || 0;
-    var r3 = parseInt(document.getElementById('r3').value) || 0;
-    var b1Z = document.getElementById('b1Z').value;
-    var b2Z = document.getElementById('b2Z').value;
-    var useHot = document.getElementById('eHot').checked && Object.keys(redHistory).length > 0;
-    var hotWeight = getHotWeight();
-    
-    var reds = generateReds(sumMin, sumMax, r1, r2, r3, useHot, hotWeight, 35);
-    
-    var blues = [];
-    var maxTry = 100;
-    for (var i = 0; i < maxTry; i++) {
-        var b1, b2;
-        if (b1Z === '1') b1 = Math.floor(Math.random() * 6) + 1;
-        else if (b1Z === '2') b1 = Math.floor(Math.random() * 6) + 7;
-        else b1 = Math.floor(Math.random() * 12) + 1;
-        
-        if (b2Z === '1') b2 = Math.floor(Math.random() * 6) + 1;
-        else if (b2Z === '2') b2 = Math.floor(Math.random() * 6) + 7;
-        else b2 = Math.floor(Math.random() * 12) + 1;
-        
-        if (b1 !== b2) {
-            blues = [b1, b2].sort(function(a, b) { return a - b; });
-            break;
-        }
-    }
-    if (blues.length === 0) blues = pick(1, 12, 2).sort(function(a, b) { return a - b; });
-    
-    return { reds: reds, blues: blues };
-}
-
-// ========== 生成快乐8 ==========
-function generateKL8() {
-    var ratio = document.getElementById('kRatio').value;
-    var useHot = document.getElementById('eHot').checked && Object.keys(redHistory).length > 0;
-    var hotWeight = getHotWeight();
-    
-    var maxTry = 200;
-    for (var i = 0; i < maxTry; i++) {
-        var numbers;
-        if (useHot) {
-            numbers = weightedPick(redHistory, 1, 80, 10, hotWeight).sort(function(a, b) { return a - b; });
-        } else {
-            numbers = pick(1, 80, 10).sort(function(a, b) { return a - b; });
-        }
-        
-        if (ratio !== '0') {
-            var parts = ratio.split(':');
-            var oddCount = numbers.filter(function(n) { return n % 2 === 1; }).length;
-            if (oddCount !== parseInt(parts[0])) continue;
-        }
-        return numbers;
-    }
-    return pick(1, 80, 10).sort(function(a, b) { return a - b; });
-}
-
-// ========== 生成号码（根据彩种） ==========
-function generateNumber() {
-    if (currentType === 'ssq') return generateSSQ();
-    if (currentType === 'dlt') return generateDLT();
-    if (currentType === 'kl8') return generateKL8();
-    if (currentType === 'qxc') {
-        var a = [];
-        for (var i = 0; i < 7; i++) a.push(Math.floor(Math.random() * 10));
-        return a;
-    }
-    if (currentType === 'fc3d') {
-        var a = [];
-        for (var i = 0; i < 3; i++) a.push(Math.floor(Math.random() * 10));
-        return a;
-    }
-    if (currentType === 'pl5') {
-        var a = [];
-        for (var i = 0; i < 5; i++) a.push(Math.floor(Math.random() * 10));
-        return a;
-    }
-    return [];
-}
-
-// ========== 格式化区域显示 ==========
-function formatZone(reds) {
-    var z1 = reds.filter(function(n) { return n >= 1 && n <= 11; });
-    var z2 = reds.filter(function(n) { return n >= 12 && n <= 22; });
-    var z3 = reds.filter(function(n) { return n >= 23; });
-    var html = '';
-    
-    if (z1.length > 0) {
-        html += '<span class="zt z1">1区</span>' + 
-            z1.map(function(n) { return '<div class="ball red">' + String(n).padStart(2, '0') + '</div>'; }).join('') + 
-            '<span class="zsl">|</span>';
-    }
-    if (z2.length > 0) {
-        html += '<span class="zt z2">2区</span>' + 
-            z2.map(function(n) { return '<div class="ball red">' + String(n).padStart(2, '0') + '</div>'; }).join('') + 
-            '<span class="zsl">|</span>';
-    }
-    if (z3.length > 0) {
-        html += '<span class="zt z3">3区</span>' + 
-            z3.map(function(n) { return '<div class="ball red">' + String(n).padStart(2, '0') + '</div>'; }).join('');
-    }
-    return html;
-}
-
-// ========== 格式化显示 ==========
-function formatSet(data, type) {
-    if (type === 'ssq') {
-        return formatZone(data.reds) + '<span class="plus">+</span><div class="ball blue">' + String(data.blue).padStart(2, '0') + '</div>';
-    }
-    if (type === 'dlt') {
-        return formatZone(data.reds) + '<span class="plus">+</span>' + 
-            data.blues.map(function(n) { return '<div class="ball blue">' + String(n).padStart(2, '0') + '</div>'; }).join('');
-    }
-    if (type === 'kl8') {
-        return data.map(function(n) { 
-            return '<div class="ball blue" style="width:28px;height:28px;font-size:11px">' + String(n).padStart(2, '0') + '</div>'; 
-        }).join('');
-    }
-    return data.map(function(n) { return '<div class="ball gold">' + n + '</div>'; }).join('');
-}
-
-// ========== 主生成函数 ==========
+// 生成号码
 function generate() {
-    var count = parseInt(document.getElementById('gCnt').value);
-    currentSets = [];
+    var config = CONFIG[currentType];
+    var hotWeight = getHotWeight();
+    var useHot = Object.keys(redHistory).length > 0;
+    
     var html = '';
     
-    for (var i = 0; i < count; i++) {
-        var data = generateNumber();
-        currentSets.push({ data: data, type: currentType });
-        html += '<div class="srow"><span class="slbl">' + (i + 1) + '.</span>' + formatSet(data, currentType) + '</div>';
+    if (currentType === 'ssq') {
+        var reds = useHot ? weightedPick(6, 33, hotWeight).sort(function(a, b) { return a - b; }) : randomPick(6, 33).sort(function(a, b) { return a - b; });
+        var blue = useHot ? (function() {
+            var pool = []; for (var i = 1; i <= 16; i++) pool.push({ n: i, w: (blueHistory[i] || 0) + 1 });
+            var total = pool.reduce(function(a, b) { return a + b.w; }, 0);
+            var r = Math.random() * total, sum = 0;
+            for (var j = 0; j < pool.length; j++) { sum += pool[j].w; if (sum >= r) return pool[j].n; }
+            return Math.floor(Math.random() * 16) + 1;
+        })() : Math.floor(Math.random() * 16) + 1;
+        
+        html += reds.map(function(n) { return '<div class="ball">' + String(n).padStart(2, '0') + '</div>'; }).join('');
+        html += '<span style="color:#888;font-size:20px;margin:0 5px">+</span>';
+        html += '<div class="ball blue">' + String(blue).padStart(2, '0') + '</div>';
+        
+    } else if (currentType === 'dlt') {
+        var reds = useHot ? weightedPick(5, 35, hotWeight).sort(function(a, b) { return a - b; }) : randomPick(5, 35).sort(function(a, b) { return a - b; });
+        var blues = randomPick(2, 12).sort(function(a, b) { return a - b; });
+        
+        html += reds.map(function(n) { return '<div class="ball">' + String(n).padStart(2, '0') + '</div>'; }).join('');
+        html += '<span style="color:#888;font-size:20px;margin:0 5px">+</span>';
+        html += blues.map(function(n) { return '<div class="ball blue">' + String(n).padStart(2, '0') + '</div>'; }).join('');
+        
+    } else if (currentType === 'kl8') {
+        var nums = useHot ? weightedPick(10, 80, hotWeight).sort(function(a, b) { return a - b; }) : randomPick(10, 80).sort(function(a, b) { return a - b; });
+        html += nums.map(function(n) { return '<div class="ball blue" style="width:32px;height:32px;font-size:12px">' + String(n).padStart(2, '0') + '</div>'; }).join('');
     }
     
-    document.getElementById('nArea').innerHTML = html;
-    document.getElementById('tip').textContent = tips[Math.floor(Math.random() * tips.length)];
-    
-    var label = currentType === 'ssq' ? '双色球' : 
-                currentType === 'dlt' ? '大乐透' : 
-                currentType === 'qxc' ? '七星彩' : 
-                currentType === 'pl5' ? '排列五' : 
-                currentType === 'kl8' ? '快乐8' : '3D';
-    var record = label + ' x' + count + '组';
-    history.unshift(record);
-    history = history.slice(0, 20);
-    document.getElementById('hList2').innerHTML = history.map(function(x) { return '<div class="hitem">' + x + '</div>'; }).join('');
+    document.getElementById('numbers').innerHTML = html;
+    document.getElementById('info').textContent = CONFIG[currentType].name + ' | 热权重:' + hotWeight.toFixed(2);
 }
 
-// ========== 复制功能 ==========
-function copyAll() {
-    var label = currentType === 'ssq' ? '双色球' : 
-                currentType === 'dlt' ? '大乐透' : 
-                currentType === 'qxc' ? '七星彩' : 
-                currentType === 'pl5' ? '排列五' : 
-                currentType === 'kl8' ? '快乐8' : '3D';
-    var text = label + ': \n';
+// 复制
+function copyNumbers() {
+    var html = document.getElementById('numbers').innerHTML;
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    var text = '';
+    div.querySelectorAll('.ball').forEach(function(b) { text += b.textContent + ' '; });
     
-    currentSets.forEach(function(item, i) {
-        var d = item.data;
-        var t = item.type;
-        if (t === 'ssq') {
-            text += (i + 1) + '. ' + d.reds.map(function(n) { return String(n).padStart(2, '0'); }).join(' ') + ' + ' + String(d.blue).padStart(2, '0') + '\n';
-        } else if (t === 'dlt') {
-            text += (i + 1) + '. ' + d.reds.map(function(n) { return String(n).padStart(2, '0'); }).join(' ') + ' + ' + d.blues.map(function(n) { return String(n).padStart(2, '0'); }).join(' ') + '\n';
-        } else if (t === 'kl8') {
-            text += (i + 1) + '. ' + d.map(function(n) { return String(n).padStart(2, '0'); }).join(' ') + '\n';
-        } else {
-            text += (i + 1) + '. ' + d.join('') + '\n';
-        }
-    });
-    
-    navigator.clipboard.writeText(text).then(function() {
-        var btn = document.getElementById('cBtn');
+    navigator.clipboard.writeText(text.trim()).then(function() {
+        var btn = document.getElementById('copyBtn');
         btn.textContent = '✅ 已复制';
         btn.classList.add('copied');
         setTimeout(function() {
-            btn.textContent = '📋 一键复制';
+            btn.textContent = '📋 复制';
             btn.classList.remove('copied');
-        }, 2000);
+        }, 1500);
     });
 }
 
-// ========== 启动 ==========
+// 启动
 loadPresetData();
-</script></body></html>
+generate();
+</script>
+</body>
+</html>
